@@ -50,13 +50,30 @@ class ProductController extends Controller
         return view('backend.contents.product.edit', compact('product', 'categories', 'promotions'));
     }
     public function update($id, Request $request){
-        $data = $request->all();
-        unset($data['_token']);
-        $product = Product::where('id', $id)->update($data);
-        if ($product) {
-            return redirect()->route('product.index');
+        $product = Product::findOrFail($id);
+        $data = $request->except(['_token', 'thumbnail']);
+
+        // Xử lý file thumbnail nếu có upload file mới
+        if ($request->hasFile('thumbnail')) {
+            // Xóa file cũ nếu cần
+            if (file_exists(public_path($product->thumbnail))) {
+                unlink(public_path($product->thumbnail));
+            }
+
+            // Lưu file mới
+            $file = $request->file('thumbnail');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/products'), $fileName);
+            $data['thumbnail'] = 'uploads/products/' . $fileName;
+        }
+
+        // Cập nhật sản phẩm
+        $updated = $product->update($data);
+
+        if ($updated) {
+            return redirect()->route('product.index')->with('success', 'Cập nhật sản phẩm thành công!');
         } else {
-            return 'Error!!';
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật sản phẩm!');
         }
     }
     public function delete($id) {

@@ -13,7 +13,7 @@ class PromotionController extends Controller
         $promotions = Promotion::paginate(5);
         return view('backend.contents.promotion.index', compact('promotions'));
     }
-    public function create() {  
+    public function create() {
         return view('backend.contents.promotion.create');
     }
     public function submitcreate(Request $res) {
@@ -21,6 +21,25 @@ class PromotionController extends Controller
         $new_promo = Promotion::create($data);
         if ($new_promo) {
             return Redirect::to('admin/promotion/index');
+        } else {
+            return 'Error!!';
+        }
+    }
+    public function edit($id) {
+        $product = Promotion::find($id);
+        $categories = Promotion::select('id', 'name')->get();
+        $promotions = Promotion::select('id', 'name')->get();
+        return view('backend.contents.product.edit', compact('product', 'categories', 'promotions'));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function delete($id) {
+        $promotion = Promotion::findOrFail($id);
+        $status = $promotion->delete();
+        if ($status == 1) {
+            return redirect()->route('promotion.index');
         } else {
             return 'Error!!';
         }
