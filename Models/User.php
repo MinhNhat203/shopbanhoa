@@ -36,12 +36,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public static function factory()
-    {
-    }
-
     public function Bills() {
-        return $this->hasMany(Bills::class);
+        return $this->hasMany(Bill::class);
+    }
+    public function Roles()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

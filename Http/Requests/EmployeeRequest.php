@@ -25,7 +25,7 @@ class EmployeeRequest extends FormRequest
     {
         return [
             'name' =>'min:5' ,'max:225' ,'string',
-            'password' =>'min:8',
+            'password' =>'min:6',
             'email'=>'min:5','email'
         ];
     }
