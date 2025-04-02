@@ -10,8 +10,6 @@ class Role extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'roles'; // Đảm bảo model trỏ đúng bảng
-
     protected $fillable = [
         'name', 'description',
     ];

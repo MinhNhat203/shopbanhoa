@@ -8,7 +8,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +35,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
     public function Bills() {
         return $this->hasMany(Bill::class);
     }
@@ -44,3 +45,5 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 }
+
+
