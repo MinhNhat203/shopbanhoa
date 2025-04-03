@@ -36,13 +36,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
     public function Bills() {
         return $this->hasMany(Bill::class);
-    }
-    public function Roles()
-    {
-        return $this->belongsTo(Role::class);
     }
 }
 
