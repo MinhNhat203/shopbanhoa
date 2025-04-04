@@ -42,11 +42,11 @@ class ProductController extends Controller
                         <div class="product-badge badge-top badge-right badge-pink">
                             <span>-' . $product->promotion->percent . '%</span>
                         </div>
-                        
+
                         <div class="product-action-2-wrap">
-                            
+
                             <a href="#" onclick="return false;" data-url_addcart="' . route('addtocart') . '" id="' . $product->id . '" class="product-action-btn-2 add-cart" title="Add To Cart" ><i class="pe-7s-cart"></i> Add to cart</a>
-    
+
                         </div>
                     </div>
                     <div class="product-content">
@@ -79,7 +79,7 @@ class ProductController extends Controller
         $html = $this->renderHtml($products);
         return $html;
     }
-    
+
 
     public function searchProduct(Request $request)
     {

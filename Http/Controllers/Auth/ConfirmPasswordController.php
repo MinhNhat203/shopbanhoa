@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Hash;
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
+use Illuminate\Http\Request;
 
 class ConfirmPasswordController extends Controller
 {
@@ -37,4 +39,25 @@ class ConfirmPasswordController extends Controller
     {
         $this->middleware('auth');
     }
+    public function showConfirmForm(Request $request)
+    {
+        return view('auth.passwords.confirm', ['redirectTo' => $this->redirectTo]);
+    }
+
+    public function store(Request $request)
+    {
+        // Thực hiện kiểm tra thêm trước khi xác nhận mật khẩu
+        $this->validate($request, [
+            'password' => 'required|password',
+        ]);
+
+        // Nếu mật khẩu đúng, thực hiện hành động tiếp theo
+        if (Hash::check($request->password, auth()->user()->password)) {
+            return redirect()->intended($this->redirectTo);
+        }
+
+        // Nếu mật khẩu sai, trả về lỗi
+        return back()->withErrors(['password' => 'The password is incorrect.']);
+    }
+
 }
