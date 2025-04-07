@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Promotion;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -76,6 +77,10 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật sản phẩm!');
         }
     }
+
+    /**
+     * @throws Exception
+     */
     public function delete($id) {
         $product = Product::findOrFail($id);
         $status = $product->delete();

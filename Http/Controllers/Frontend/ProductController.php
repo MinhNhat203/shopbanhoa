@@ -87,4 +87,9 @@ class ProductController extends Controller
         $products = Product::select('name')->where('name', 'LIKE', "%$keyword%")->get();
         return response()->json($products);
     }
+
+
+
+
+
 }

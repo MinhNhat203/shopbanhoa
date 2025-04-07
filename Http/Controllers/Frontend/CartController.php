@@ -22,7 +22,6 @@ class CartController extends Controller
     {
         if (Auth::check()) {
             $product = Product::find($request->id);
-
             $status = Cart::add(
                 [
                     'id' => $product->id,
