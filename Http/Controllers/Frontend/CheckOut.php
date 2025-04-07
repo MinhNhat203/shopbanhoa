@@ -53,6 +53,8 @@ class CheckOut extends Controller
     public function FinishShopping(CheckingInfoRequest $res)
     {
         $data = $res->all();
+        $data['id_user'] = auth()->id();
+
         $new_bill = Bill::create($data);
         $total = 0;
 
@@ -63,7 +65,7 @@ class CheckOut extends Controller
                 'product_id' => $product->id,
                 'qty' => $product->qty,
                 'discount' => $product->options->discount,
-                'total' => $product->price * $product->qty
+                'total' => $product->price * $product->qty,
             ];
             Billdetail::create($detail);
 
@@ -73,7 +75,7 @@ class CheckOut extends Controller
             // Cập nhật số lượng sản phẩm trong kho
             $product_in_db = Product::find($product->id);
             if ($product_in_db) {
-                $product_in_db->qty -= $product->qty; // Giảm số lượng sản phẩm trong kho
+                $product_in_db->qty -= $product->qty;
                 $product_in_db->save();
             }
         }
@@ -90,11 +92,13 @@ class CheckOut extends Controller
             Cart::destroy();
             event(new notification($notification));
 
-            // Chuyển hướng người dùng về trang sản phẩm
             return redirect()->route('product');
         } else {
             return 'Error!!';
+
         }
+
     }
+
 
 }
