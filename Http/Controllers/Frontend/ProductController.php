@@ -11,12 +11,19 @@ use Laravel\Ui\Presets\React;
 
 class ProductController extends Controller
 {
-    public function product(Request $request)
+    public function product(Request $request, $id = null)
     {
-        $products = Product::paginate(8);
+        // Nếu có category_id, lấy sản phẩm theo category_id, nếu không lấy tất cả sản phẩm
+        if ($id) {
+            $products = Product::where('product_category_id', $id)->paginate(8);
+        } else {
+            $products = Product::paginate(8); // Lấy tất cả sản phẩm
+        }
+
         $categories = ProductCategory::select('id', 'name')->get();
         return view('frontend.contents.shopping', compact('products', 'categories'));
     }
+
 
     public function detail($id)
     {
@@ -24,10 +31,9 @@ class ProductController extends Controller
         $images = $product->images;
         $categories = ProductCategory::select('id', 'name')->get();
         $relatedProduct = Product::where('product_category_id', $product->product_category_id)->get();
-        // dd($relatedProduct);
-        // return $images;
         return view('frontend.contents.product_detail', compact('product', 'images', 'categories', 'relatedProduct', 'id'));
     }
+
     public function renderHtml($array)
     {
         $html = '';
@@ -44,9 +50,7 @@ class ProductController extends Controller
                         </div>
 
                         <div class="product-action-2-wrap">
-
-                            <a href="#" onclick="return false;" data-url_addcart="' . route('addtocart') . '" id="' . $product->id . '" class="product-action-btn-2 add-cart" title="Add To Cart" ><i class="pe-7s-cart"></i> Add to cart</a>
-
+                            <a href="#" onclick="return false;" data-url_addcart="' . route('addtocart') . '" id="' . $product->id . '" class="product-action-btn-2 add-cart" title="Add to cart" ><i class="pe-7s-cart"></i> Add to cart</a>
                         </div>
                     </div>
                     <div class="product-content">
@@ -57,7 +61,7 @@ class ProductController extends Controller
             } else {
                 $html .= '<span class="old-price"> ' . number_format($product->price, 0, '', '.') . ' đ </span>
                                             <span class="new-price"> ' . number_format($product->price - ($product->price * $product->promotion->percent) / 100, 0, '', '.') . ' đ </span>';
-            };
+            }
 
             $html .= '
                         </div>
@@ -67,16 +71,24 @@ class ProductController extends Controller
         }
         return $html;
     }
+
     public function renderProductByCategory(Request $request)
     {
-        if ($request->id != 'all') {
-            $category = $request->id;
-            $products = Product::where('product_category_id', $category)->paginate(10);
+        $categoryId = $request->id;
+
+        // Kiểm tra nếu chọn "Tất cả sản phẩm"
+        if ($categoryId != 'all') {
+            // Nếu có chọn category, lấy sản phẩm theo category
+            $products = Product::where('product_category_id', $categoryId)->paginate(10);
         } else {
-            $category = 'all';
+            // Nếu chọn "Tất cả sản phẩm"
             $products = Product::paginate(10);
         }
+
+        // Render lại HTML của sản phẩm
         $html = $this->renderHtml($products);
+
+        // Trả về HTML
         return $html;
     }
 
@@ -84,9 +96,7 @@ class ProductController extends Controller
     public function searchProduct(Request $request)
     {
         $keyword = $request->input('keyword');
-        $products = Product::select('name')->where('name', 'LIKE', "%$keyword%")->get();
+        $products = Product::where('name', 'LIKE', "%$keyword%")->get();
         return response()->json($products);
     }
-
-
 }
