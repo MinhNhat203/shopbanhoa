@@ -23,8 +23,6 @@ class ProductController extends Controller
         $categories = ProductCategory::select('id', 'name')->get();
         return view('frontend.contents.shopping', compact('products', 'categories'));
     }
-
-
     public function detail($id)
     {
         $product = Product::find($id);
@@ -91,8 +89,6 @@ class ProductController extends Controller
         // Trả về HTML
         return $html;
     }
-
-
     public function searchProduct(Request $request)
     {
         $keyword = $request->input('keyword');
