@@ -20,25 +20,25 @@ class OrderController extends Controller
             return redirect()->route('/')->with('error', 'Vui lòng đăng nhập để xem trạng thái đơn hàng');
         }
     }
-    public function cancelOrder($orderId)
+    public function cancelOrder(Request $request, $orderId)
     {
-        // Kiểm tra nếu người dùng đã đăng nhập và đơn hàng thuộc về người dùng đó
-        $order = Bill::where('id', $orderId)->where('user_id', Auth::id())->first();
+        $order = Bill::where('id', $orderId)->where('id_user', Auth::id())->first();
 
         if (!$order) {
-            return redirect()->route('order.status')->with('error', 'Đơn hàng không tồn tại hoặc bạn không có quyền hủy đơn hàng này');
+            return redirect()->route('order.status')->with('error', 'Đơn hàng không tồn tại hoặc bạn không có quyền hủy');
         }
 
-        // Kiểm tra trạng thái đơn hàng, chỉ cho phép hủy khi đơn hàng chưa giao
-        if ($order->status == 3) {
-            return redirect()->route('order.status')->with('error', 'Không thể hủy đơn hàng đã giao');
+        // Kiểm tra trạng thái đơn hàng
+        if ($order->Status != 0) {
+            return redirect()->route('order.status')->with('error', 'Không thể hủy đơn hàng');
         }
 
-        // Cập nhật trạng thái đơn hàng thành "Đã hủy"
-        $order->status = 4;
-        $order->save();
+        // Lấy giá trị status từ request, nếu không có thì mặc định là 2
+        $status = $request->input('status', 2);
 
-        // Thông báo cho người dùng
+        // Cập nhật trực tiếp
+        Bill::where('id', $orderId)->update(['Status' => $status]);
+
         return redirect()->route('order.status')->with('success', 'Đơn hàng đã được hủy thành công');
     }
 
