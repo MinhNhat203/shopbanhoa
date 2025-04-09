@@ -22,7 +22,8 @@ class ProductController extends Controller
 
         $categories = ProductCategory::select('id', 'name')->get();
         return view('frontend.contents.shopping', compact('products', 'categories'));
-    }
+     }
+    // Trong controller xử lý route product.category
     public function detail($id)
     {
         $product = Product::find($id);
@@ -77,10 +78,10 @@ class ProductController extends Controller
         // Kiểm tra nếu chọn "Tất cả sản phẩm"
         if ($categoryId != 'all') {
             // Nếu có chọn category, lấy sản phẩm theo category
-            $products = Product::where('product_category_id', $categoryId)->paginate(10);
+            $products = Product::where('product_category_id', $categoryId)->paginate(8);
         } else {
             // Nếu chọn "Tất cả sản phẩm"
-            $products = Product::paginate(10);
+            $products = Product::paginate(8);
         }
 
         // Render lại HTML của sản phẩm
