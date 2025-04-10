@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\NewsRequest;
 use App\Models\News;
 use App\Models\CategoryNew;
 use Exception;
@@ -19,10 +18,26 @@ class NewsController extends Controller
         return view('backend.contents.news.index', compact('news', 'categories'));
     }
 
-    public function create()
+    public function creatcaterogynews()
     {
         $categories = CategoryNew::select('id', 'name')->get();
         return view('backend.contents.news.create', compact('categories'));
+    }
+    public function storeCategorynews(Request $request)
+    {
+        $data = $request->all();
+        $new_category = CategoryNew::create($data);
+        if ($new_category) {
+            return redirect()->route('news.index');
+        } else {
+            return 'Error!!';
+        }
+    }
+    public function createnews()
+    {
+        $news = News::select('id', 'content')->get();
+        $categories = CategoryNew::select('id', 'name')->get();
+        return view('backend.contents.news.create', compact('categories','news'));
     }
 
     public function store(Request $request)
